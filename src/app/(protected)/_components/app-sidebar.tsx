@@ -1,5 +1,5 @@
 "use client";
-import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+
 import {
   CalendarDays,
   LayoutDashboard,
@@ -9,12 +9,13 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -31,7 +32,6 @@ import {
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
 
-// Menu items.
 const items = [
   {
     title: "Dashboard",
@@ -58,6 +58,7 @@ const items = [
 export function AppSidebar() {
   const router = useRouter();
   const session = authClient.useSession();
+  const pathname = usePathname();
 
   const handleSignOut = async () => {
     await authClient.signOut({
@@ -68,11 +69,10 @@ export function AppSidebar() {
       },
     });
   };
-
   return (
     <Sidebar>
       <SidebarHeader className="border-b p-4">
-        <Image src="/logomarca.svg" alt="ClinicPlus" width={40} height={28} />
+        <Image src="/Logo (1).svg" alt="ClinicPlus" width={136} height={28} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -81,7 +81,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={pathname === item.url}>
                     <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
@@ -100,7 +100,7 @@ export function AppSidebar() {
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton size="lg">
                   <Avatar>
-                    <AvatarFallback>JP</AvatarFallback>
+                    <AvatarFallback>FR</AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="text-sm">
@@ -113,9 +113,8 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={handleSignOut}
-                className="flex items-center gap-2">
-                  <LogOut className="h-4 w-4" />
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut />
                   Sair
                 </DropdownMenuItem>
               </DropdownMenuContent>
