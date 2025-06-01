@@ -1,10 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+@import "tailwindcss";
 @import "tw-animate-css";
 
-/* Custom variants, variables e outros */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -48,7 +44,6 @@
 }
 
 :root {
-  /* todas as variáveis definidas corretamente */
   --radius: 0.5rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
@@ -119,9 +114,8 @@
 
 @layer base {
   * {
-    
+    @apply outline-ring/50 border-border;
   }
-
   body {
     @apply bg-background text-foreground;
   }
