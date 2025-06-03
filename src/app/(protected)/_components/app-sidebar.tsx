@@ -1,3 +1,4 @@
+// src/app/(protected)/_components/app-sidebar.tsx
 "use client";
 
 import {
@@ -27,7 +28,7 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
+  SidebarMenuButton, // Este é o SidebarMenuButton de sidebar.tsx
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
@@ -69,6 +70,30 @@ export function AppSidebar() {
       },
     });
   };
+
+  // Determinar as iniciais para o AvatarFallback
+  const clinicName = session.data?.user?.clinic?.name;
+  const userName = session.data?.user?.name;
+  let fallbackText = "U"; // Padrão para Usuário
+
+  if (clinicName) {
+    fallbackText = clinicName
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+  } else if (userName) {
+    fallbackText = userName
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+  }
+  if (fallbackText.length > 2) {
+    fallbackText = fallbackText.substring(0, 2);
+  }
+
+
   return (
     <Sidebar>
       <SidebarHeader className="border-b p-4">
@@ -83,7 +108,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={pathname === item.url}>
                     <Link href={item.url}>
-                      <item.icon />
+                      <item.icon className="size-4" /> {/* Adicionado className para consistência de tamanho */}
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -98,24 +123,27 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton size="lg">
-                  <Avatar>
-                    <AvatarFallback>FR</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="text-sm">
-                      {session.data?.user?.clinic?.name}
-                    </p>
-                    <p className="text-muted-foreground text-sm">
-                      {session.data?.user.email}
-                    </p>
+                {/* Aplicando a correção aqui: */}
+                <SidebarMenuButton asChild size="lg">
+                  <div className="flex w-full items-center gap-2 text-left"> {/* Wrapper div */}
+                    <Avatar>
+                      <AvatarFallback>{fallbackText}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col overflow-hidden">
+                      <p className="truncate text-sm font-medium">
+                        {session.data?.user?.clinic?.name || "Minha Clínica"}
+                      </p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {session.data?.user.email}
+                      </p>
+                    </div>
                   </div>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut />
-                  Sair
+                  <LogOut className="mr-2 h-4 w-4" /> {/* Adicionado margin e tamanho */}
+                  <span>Sair</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
