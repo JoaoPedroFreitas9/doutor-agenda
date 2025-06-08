@@ -1,8 +1,8 @@
-// src/app/(protected)/_components/app-sidebar.tsx
 "use client";
 
 import {
   CalendarDays,
+  Gem,
   LayoutDashboard,
   LogOut,
   Stethoscope,
@@ -28,7 +28,7 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton, // Este é o SidebarMenuButton de sidebar.tsx
+  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
@@ -70,34 +70,10 @@ export function AppSidebar() {
       },
     });
   };
-
-  // Determinar as iniciais para o AvatarFallback
-  const clinicName = session.data?.user?.clinic?.name;
-  const userName = session.data?.user?.name;
-  let fallbackText = "U"; // Padrão para Usuário
-
-  if (clinicName) {
-    fallbackText = clinicName
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase();
-  } else if (userName) {
-    fallbackText = userName
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase();
-  }
-  if (fallbackText.length > 2) {
-    fallbackText = fallbackText.substring(0, 2);
-  }
-
-
   return (
     <Sidebar>
       <SidebarHeader className="border-b p-4">
-        <Image src="/Logo (1).svg" alt="ClinicPlus" width={136} height={28} />
+        <Image src="/logo (1).svg" alt="ClínicPlus" width={136} height={28} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -108,12 +84,30 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={pathname === item.url}>
                     <Link href={item.url}>
-                      <item.icon className="size-4" /> {/* Adicionado className para consistência de tamanho */}
+                      <item.icon />
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Outros</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname === "/subscription"}
+                >
+                  <Link href="/subscription">
+                    <Gem />
+                    <span>Assinatura</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -123,27 +117,24 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                {/* Aplicando a correção aqui: */}
-                <SidebarMenuButton asChild size="lg">
-                  <div className="flex w-full items-center gap-2 text-left"> {/* Wrapper div */}
-                    <Avatar>
-                      <AvatarFallback>{fallbackText}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col overflow-hidden">
-                      <p className="truncate text-sm font-medium">
-                        {session.data?.user?.clinic?.name || "Minha Clínica"}
-                      </p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {session.data?.user.email}
-                      </p>
-                    </div>
+                <SidebarMenuButton size="lg">
+                  <Avatar>
+                    <AvatarFallback>F</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm">
+                      {session.data?.user?.clinic?.name}
+                    </p>
+                    <p className="text-muted-foreground text-sm">
+                      {session.data?.user.email}
+                    </p>
                   </div>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="mr-2 h-4 w-4" /> {/* Adicionado margin e tamanho */}
-                  <span>Sair</span>
+                  <LogOut />
+                  Sair
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
