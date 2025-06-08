@@ -4,7 +4,6 @@ import { loadStripe } from "@stripe/stripe-js";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAction } from "next-safe-action/hooks";
-import { toast } from "sonner"; // Importe o toast para usar no onError
 
 import { createStripeCheckout } from "@/app/actions/create-clinic/create-stripe-checkout";
 import { Badge } from "@/components/ui/badge";
@@ -23,12 +22,8 @@ export function SubscriptionPlan({
   userEmail,
 }: SubscriptionPlanProps) {
   const router = useRouter();
-
-  const { execute, status } = useAction(createStripeCheckout, {
-    onSuccess: async (result) => { // 'result' contém a resposta da action
-      // CORREÇÃO: Acessar sessionId através de result.data
-      const sessionId = result.data?.sessionId;
-
+  const createStripeCheckoutAction = useAction(createStripeCheckout, {
+    onSuccess: async ({ data }) => {
       if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
         throw new Error("Stripe publishable key not found");
       }
@@ -38,20 +33,14 @@ export function SubscriptionPlan({
       if (!stripe) {
         throw new Error("Stripe not found");
       }
-      if (!sessionId) {
-        toast.error("Não foi possível obter a sessão de checkout.");
-        return;
+      if (!data?.sessionId) {
+        throw new Error("Session ID not found");
       }
-      // Redireciona para o checkout do Stripe
-      await stripe.redirectToCheckout({ sessionId });
+      await stripe.redirectToCheckout({
+        sessionId: data.sessionId,
+      });
     },
-    onError: (errorInfo) => {
-      // CORREÇÃO: Acessar serverError através de errorInfo.error
-      console.error("Erro ao criar checkout:", errorInfo);
-      toast.error(errorInfo.error.serverError || "Ocorreu um erro. Tente novamente.");
-    }
   });
-
   const features = [
     "Cadastro de até 3 médicos",
     "Agendamentos ilimitados",
@@ -62,22 +51,14 @@ export function SubscriptionPlan({
   ];
 
   const handleSubscribeClick = () => {
-    // CORREÇÃO: Chamar execute sem argumentos, pois a action não espera nenhum
-    execute();
+    createStripeCheckoutAction.execute();
   };
 
   const handleManagePlanClick = () => {
-    const portalUrl = process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_URL;
-    if (portalUrl) {
-      // Usando router.push para uma navegação do lado do cliente mais suave
-      router.push(`${portalUrl}?prefilled_email=${userEmail}`);
-    } else {
-      console.error("URL do Portal do Cliente Stripe não configurada.");
-      toast.error("A página de gerenciamento não está disponível no momento.");
-    }
+    router.push(
+      `${process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_URL}?prefilled_email=${userEmail}`,
+    );
   };
-  
-  const isLoading = status === 'executing';
 
   return (
     <Card className={className}>
@@ -85,8 +66,8 @@ export function SubscriptionPlan({
         <div className="flex items-center justify-between">
           <h3 className="text-2xl font-bold text-gray-900">Essential</h3>
           {active && (
-            <Badge className="border-green-600 bg-green-100 text-green-700 hover:bg-green-100">
-              Plano Atual
+            <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+              Atual
             </Badge>
           )}
         </div>
@@ -116,9 +97,9 @@ export function SubscriptionPlan({
             className="w-full"
             variant="outline"
             onClick={active ? handleManagePlanClick : handleSubscribeClick}
-            disabled={isLoading}
+            disabled={createStripeCheckoutAction.isExecuting}
           >
-            {isLoading ? (
+            {createStripeCheckoutAction.isExecuting ? (
               <Loader2 className="mr-1 h-4 w-4 animate-spin" />
             ) : active ? (
               "Gerenciar assinatura"

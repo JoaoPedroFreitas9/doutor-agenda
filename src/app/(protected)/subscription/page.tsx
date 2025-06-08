@@ -11,18 +11,28 @@ import {
 } from "@/components/ui/page-container";
 import { auth } from "@/lib/auth";
 
-import { SubscriptionPlan } from "./_components/subscription-plan"
+import { SubscriptionPlan } from "./_components/subscription-plan";
+
+// Usar uma constante torna o código mais claro e fácil de atualizar
+const ESSENTIAL_PLAN_ID = "essential"; // ou "pro", conforme seu banco de dados
 
 const SubscriptionPage = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  if (!session) {
-    redirect("/login");
+
+  // Sugestão: redirecionar para /authentication para consistência
+  if (!session?.user) {
+    redirect("/authentication");
   }
+
   if (!session.user.clinic) {
     redirect("/clinic-form");
   }
+
+  // A lógica principal permanece a mesma
+  const isPlanActive = session.user.plan === ESSENTIAL_PLAN_ID;
+
   return (
     <PageContainer>
       <PageHeader>
@@ -32,11 +42,13 @@ const SubscriptionPage = async () => {
         </PageHeaderContent>
       </PageHeader>
       <PageContent>
-        <SubscriptionPlan
-          className="w-[350px]"
-          active={session.user.plan === "essential"}
-          userEmail={session.user.email}
-        />
+        <div className="flex w-full pt-8">
+          <SubscriptionPlan
+            className="w-full max-w-sm" // max-w-sm é bom para responsividade
+            active={isPlanActive}
+            userEmail={session.user.email as string} // Adicionar 'as string' ou '!' para garantir o tipo
+          />
+        </div>
       </PageContent>
     </PageContainer>
   );
