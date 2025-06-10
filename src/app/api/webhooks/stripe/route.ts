@@ -1,6 +1,3 @@
-// src/app/api/webhooks/stripe/route.ts
-"use server";
-
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers"; // CORREÇÃO: Importar 'headers' de 'next/headers'
 import { NextResponse } from "next/server";
@@ -134,4 +131,7 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ received: true });
+}
+export function GET() {
+  return new Response("Method Not Allowed", { status: 405 });
 }
