@@ -25,6 +25,7 @@ import TopDoctors from "./_components/top-doctors";
 import TopSpecialties from "./_components/top-specialties";
 
 interface DashboardPageProps {
+  // Corrigido: searchParams é um objeto simples, não uma Promise
   searchParams: {
     from?: string;
     to?: string;
@@ -33,6 +34,9 @@ interface DashboardPageProps {
 }
 
 const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
+  // Removido: Não é mais necessário awaitar searchParams, pois não é uma Promise
+  // const resolvedSearchParams = await searchParams; // LINHA REMOVIDA
+
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -43,18 +47,17 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
     redirect("/clinic-form");
   }
 
-  // Lógica para lidar com o sucesso do pagamento
-  // Removido revalidatePath para evitar o erro "used during render"
+  // Lógica para lidar com o sucesso do pagamento, usando searchParams diretamente
   if (searchParams.payment_success === "true" && !session.user.plan) {
-    // Apenas redireciona. Isso forçará uma nova requisição para /dashboard,
-    // o que (idealmente) fará com que a sessão seja buscada novamente.
     redirect("/dashboard");
   }
 
+  // Verifica o plano APÓS a tentativa de revalidação (se o redirect acima ocorrer)
   if (!session.user.plan) {
     redirect("/new-subscription");
   }
 
+  // Usando searchParams diretamente para 'from' e 'to'
   const { from, to } = searchParams;
   if (!from || !to) {
     redirect(
