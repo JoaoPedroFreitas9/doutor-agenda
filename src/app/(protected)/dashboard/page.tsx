@@ -25,17 +25,15 @@ import TopDoctors from "./_components/top-doctors";
 import TopSpecialties from "./_components/top-specialties";
 
 interface DashboardPageProps {
-  // Corrigido: searchParams é um objeto simples, não uma Promise
-  searchParams: {
-    from?: string;
-    to?: string;
+  searchParams: Promise<{
+    from: string;
+    to: string;
     payment_success?: string;
-  };
+  }>;
 }
 
 const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
-  // Removido: Não é mais necessário awaitar searchParams, pois não é uma Promise
-  // const resolvedSearchParams = await searchParams; // LINHA REMOVIDA
+  const resolvedSearchParams = await searchParams;
 
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -47,18 +45,15 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
     redirect("/clinic-form");
   }
 
-  // Lógica para lidar com o sucesso do pagamento, usando searchParams diretamente
-  if (searchParams.payment_success === "true" && !session.user.plan) {
+  if (resolvedSearchParams.payment_success === "true" && !session.user.plan) {
     redirect("/dashboard");
   }
 
-  // Verifica o plano APÓS a tentativa de revalidação (se o redirect acima ocorrer)
   if (!session.user.plan) {
     redirect("/new-subscription");
   }
 
-  // Usando searchParams diretamente para 'from' e 'to'
-  const { from, to } = searchParams;
+  const { from, to } = resolvedSearchParams;
   if (!from || !to) {
     redirect(
       `/dashboard?from=${dayjs().format("YYYY-MM-DD")}&to=${dayjs().add(1, "month").format("YYYY-MM-DD")}`,
