@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { headers } from "next/headers"; // CORREÇÃO: Importar 'headers' de 'next/headers'
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -28,7 +28,6 @@ export async function POST(request: Request) {
 
   const text = await request.text();
   const stripe = new Stripe(stripeSecret, {
-    // CORREÇÃO: Usar a versão da API que seu sistema espera para evitar conflito de tipo
     apiVersion: "2025-05-28.basil",
   });
 
@@ -37,7 +36,6 @@ export async function POST(request: Request) {
   try {
     event = stripe.webhooks.constructEvent(text, signature, webhookSecret);
   } catch (err) {
-    // CORREÇÃO: Usar 'unknown' e fazer type check para evitar erro de lint
     if (err instanceof Error) {
       console.error(`❌ Erro na verificação do webhook: ${err.message}`);
       return NextResponse.json(
@@ -53,7 +51,6 @@ export async function POST(request: Request) {
 
   try {
     switch (event.type) {
-      // MUDANÇA DE LÓGICA: Usar 'checkout.session.completed' é mais direto e confiável
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
 
@@ -78,7 +75,7 @@ export async function POST(request: Request) {
         await db
           .update(usersTable)
           .set({
-            plan: "essential", // MUDANÇA: Definindo o plano como 'essential' diretamente
+            plan: "essential",
             stripeSubscriptionId: subscriptionId,
             stripeCustomerId: customerId,
           })
@@ -116,7 +113,6 @@ export async function POST(request: Request) {
         console.log(`🔔 Evento não tratado recebido: ${event.type}`);
     }
   } catch (err) {
-    // CORREÇÃO: Usar 'unknown' e fazer type check
     if (err instanceof Error) {
       console.error("❌ Erro ao processar o evento do webhook:", err.message);
       return NextResponse.json(

@@ -25,10 +25,11 @@ import TopDoctors from "./_components/top-doctors";
 import TopSpecialties from "./_components/top-specialties";
 
 interface DashboardPageProps {
-  searchParams: Promise<{
-    from: string;
-    to: string;
-  }>;
+  searchParams: {
+    from?: string;
+    to?: string;
+    payment_success?: string;
+  };
 }
 
 const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
@@ -41,11 +42,20 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
   if (!session.user.clinic) {
     redirect("/clinic-form");
   }
+
+  // Lógica para lidar com o sucesso do pagamento
+  // Removido revalidatePath para evitar o erro "used during render"
+  if (searchParams.payment_success === "true" && !session.user.plan) {
+    // Apenas redireciona. Isso forçará uma nova requisição para /dashboard,
+    // o que (idealmente) fará com que a sessão seja buscada novamente.
+    redirect("/dashboard");
+  }
+
   if (!session.user.plan) {
     redirect("/new-subscription");
   }
-  
-  const { from, to } = await searchParams;
+
+  const { from, to } = searchParams;
   if (!from || !to) {
     redirect(
       `/dashboard?from=${dayjs().format("YYYY-MM-DD")}&to=${dayjs().add(1, "month").format("YYYY-MM-DD")}`,
