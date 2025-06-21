@@ -1,7 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Lock, Mail, User } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -39,6 +40,7 @@ const registerSchema = z.object({
     .trim()
     .min(8, { message: "A senha deve ter pelo menos 8 caracteres" }),
 });
+
 const SignUpForm = () => {
   const router = useRouter();
   const form = useForm<z.infer<typeof registerSchema>>({
@@ -73,12 +75,24 @@ const SignUpForm = () => {
   }
 
   return (
-    <Card>
+    <Card className="mx-auto w-full max-w-md">
+      {" "}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <CardHeader>
-            <CardTitle>Cadastro</CardTitle>
-            <CardDescription>Crie uma conta para continuar</CardDescription>
+          <CardHeader className="text-center">
+            {" "}
+            <div className="mb-4 flex justify-center">
+              <Image
+                src="/logo (1).svg"
+                alt="ClínicPlus Logo"
+                width={120}
+                height={30}
+              />{" "}
+            </div>
+            <CardTitle className="text-3xl font-bold">Crie sua conta</CardTitle>{" "}
+            <CardDescription>
+              Junte-se à ClínicPlus e simplifique sua gestão!
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <FormField
@@ -88,9 +102,18 @@ const SignUpForm = () => {
                 <FormItem>
                   <FormLabel>Nome</FormLabel>
                   <FormControl>
-                    <Input placeholder="Digite seu nome" {...field} />
+                    <div className="relative">
+                      {" "}
+                      {/* Wrapper para ícone */}
+                      <User className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                      <Input
+                        placeholder="Seu nome completo"
+                        {...field}
+                        className="pl-9"
+                      />{" "}
+                      {/* Padding para o ícone */}
+                    </div>
                   </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}
@@ -102,9 +125,18 @@ const SignUpForm = () => {
                 <FormItem>
                   <FormLabel>E-mail</FormLabel>
                   <FormControl>
-                    <Input placeholder="Digite seu e-mail" {...field} />
+                    <div className="relative">
+                      {" "}
+                      {/* Wrapper para ícone */}
+                      <Mail className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                      <Input
+                        placeholder="seu.email@exemplo.com"
+                        {...field}
+                        className="pl-9"
+                      />{" "}
+                      {/* Padding para o ícone */}
+                    </div>
                   </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}
@@ -116,30 +148,37 @@ const SignUpForm = () => {
                 <FormItem>
                   <FormLabel>Senha</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Digite sua senha"
-                      type="password"
-                      {...field}
-                    />
+                    <div className="relative">
+                      {" "}
+                      {/* Wrapper para ícone */}
+                      <Lock className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                      <Input
+                        placeholder="•••••••• (mín. 8 caracteres)"
+                        type="password"
+                        {...field}
+                        className="pl-9"
+                      />
+                    </div>
                   </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}
             />
           </CardContent>
           <CardFooter>
-            <Button
-              className="w-full"
-              type="submit"
-              disabled={form.formState.isSubmitting}
-            >
-              {form.formState.isSubmitting ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                "Criar conta"
-              )}
-            </Button>
+            <div className="w-full space-y-3">
+              <Button
+                className="w-full"
+                type="submit"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  "Criar conta"
+                )}
+              </Button>
+            </div>
           </CardFooter>
         </form>
       </Form>

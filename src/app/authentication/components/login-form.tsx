@@ -1,7 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Lock, Mail } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -70,12 +71,30 @@ const LoginForm = () => {
   };
 
   return (
-    <Card>
+    <Card className="mx-auto w-full max-w-md">
+      {" "}
+      {/* Ajuste de largura e centralização */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-          <CardHeader>
-            <CardTitle>Login</CardTitle>
-            <CardDescription>Faça login para continuar.</CardDescription>
+          <CardHeader className="text-center">
+            {" "}
+            {/* Centraliza o conteúdo do cabeçalho */}
+            <div className="mb-4 flex justify-center">
+              <Image
+                src="/logo (1).svg" // Caminho para o logo
+                alt="ClínicPlus Logo"
+                width={120}
+                height={30}
+              />{" "}
+              {/* Seu logo aqui */}
+            </div>
+            <CardTitle className="text-3xl font-bold">
+              Bem-vindo(a) de volta!
+            </CardTitle>{" "}
+            {/* Título mais convidativo */}
+            <CardDescription>
+              Faça login para acessar sua conta.
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <FormField
@@ -85,7 +104,17 @@ const LoginForm = () => {
                 <FormItem>
                   <FormLabel>E-mail</FormLabel>
                   <FormControl>
-                    <Input placeholder="Digite seu e-mail" {...field} />
+                    <div className="relative">
+                      {" "}
+                      {/* Wrapper para ícone */}
+                      <Mail className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                      <Input
+                        placeholder="seu.email@exemplo.com"
+                        {...field}
+                        className="pl-9"
+                      />{" "}
+                      {/* Padding para o ícone */}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -98,11 +127,17 @@ const LoginForm = () => {
                 <FormItem>
                   <FormLabel>Senha</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Digite sua senha"
-                      type="password"
-                      {...field}
-                    />
+                    <div className="relative">
+                      {" "}
+                      {/* Wrapper para ícone */}
+                      <Lock className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                      <Input
+                        placeholder="••••••••"
+                        type="password"
+                        {...field}
+                        className="pl-9"
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -110,7 +145,9 @@ const LoginForm = () => {
             />
           </CardContent>
           <CardFooter>
-            <div className="w-full space-y-2">
+            <div className="w-full space-y-3">
+              {" "}
+              {/* Aumenta um pouco o espaçamento aqui */}
               <Button
                 type="submit"
                 className="w-full"
@@ -122,6 +159,11 @@ const LoginForm = () => {
                   "Entrar"
                 )}
               </Button>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background text-muted-foreground px-2">
+                  Ou
+                </span>
+              </div>
               <Button
                 variant="outline"
                 className="w-full"
