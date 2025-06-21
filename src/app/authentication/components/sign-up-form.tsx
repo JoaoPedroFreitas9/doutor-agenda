@@ -83,7 +83,7 @@ const SignUpForm = () => {
             {" "}
             <div className="mb-4 flex justify-center">
               <Image
-                src="/logo (1).svg"
+                src="/Logo (1).svg"
                 alt="ClínicPlus Logo"
                 width={120}
                 height={30}

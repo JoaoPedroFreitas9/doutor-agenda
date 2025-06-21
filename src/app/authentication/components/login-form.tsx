@@ -81,7 +81,7 @@ const LoginForm = () => {
             {/* Centraliza o conteúdo do cabeçalho */}
             <div className="mb-4 flex justify-center">
               <Image
-                src="/logo (1).svg" // Caminho para o logo
+                src="/Logo (1).svg" // Caminho para o logo
                 alt="ClínicPlus Logo"
                 width={120}
                 height={30}
