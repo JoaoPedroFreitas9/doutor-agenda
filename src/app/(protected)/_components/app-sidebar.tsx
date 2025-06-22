@@ -73,7 +73,7 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="border-b p-4">
-        <Image src="/logo (1).svg" alt="ClínicPlus" width={136} height={28} />
+        <Image src="/Logo (1).svg" alt="ClínicPlus" width={136} height={28} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
