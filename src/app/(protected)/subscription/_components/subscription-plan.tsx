@@ -1,3 +1,5 @@
+// src/app/(protected)/subscription/_components/subscription-plan.tsx
+
 "use client";
 
 import { loadStripe } from "@stripe/stripe-js";
@@ -105,9 +107,11 @@ export function SubscriptionPlan({
 
       <CardContent className="pt-6">
         <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">
-          O plano inclui acesso a todas as funcionalidades listadas ao lado,
-          além de atualizações futuras.
+          {active
+            ? "Este é o seu plano atual. Todas as funcionalidades estão ativas na sua conta."
+            : "O plano inclui acesso a todas as funcionalidades listadas ao lado, além de atualizações futuras."}
         </p>
+
         <div className="mt-4">
           <Button
             className="w-full py-6 text-base"
@@ -124,6 +128,12 @@ export function SubscriptionPlan({
               "Assinar Agora"
             )}
           </Button>
+          {!active && (
+            <p className="mt-3 text-center text-xs text-gray-500">
+              Ao assinar, você concorda com nossos Termos de Serviço e Política
+              de Privacidade.
+            </p>
+          )}
         </div>
       </CardContent>
     </Card>
