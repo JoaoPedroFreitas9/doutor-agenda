@@ -10,8 +10,8 @@
 ## Sumário
 
 - [Sobre o Projeto](#sobre-o-projeto)
-  - [Visão Geral](#visão-geral)
-  - [Funcionalidades](#funcionalidades)
+- [Visão Geral](#visão-geral)
+- [Funcionalidades](#funcionalidades)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Implantação](#implantação)
 - [Licença](#licença)
